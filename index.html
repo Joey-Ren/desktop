@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style/background.css">
+    <link rel="stylesheet" href="./style/tiangou.css">
+</head>
+
+<body>
+
+    <div class="desktop-content">
+        <!--粒子时钟-->
+        <div class="clock-of-particles">
+            <canvas id="time"></canvas>
+            <script src="./js/time.js"></script>
+            <script>
+                var time = new TimeCanvas('time', {
+                    width: 400,
+                    height: 250,
+                    color: "#FFF",
+                    format: "h:i:s",
+                    size: 40,
+                    init: e => {
+                        console.log('init', e)
+                    },
+                    change: (e) => {}
+                })
+            </script>
+        </div>
+        <div class="desktop-content-footer">
+            <!--舔狗部分-->
+            <div class="tiangou-content">
+                <div class="tiangou-content-item">
+                    <main>
+                        <p style="margin-bottom: 10px; font-size: 18px">舔狗日记</p>
+                        <div id="tiangou" class="tiangouText">
+                            <p>你</p>
+                        </div>
+                    </main>
+                    <script src="https://api.ge69.com/zibill/typed.js"></script>
+                    <script src="./js/jquery.min.js"></script>
+                    <script src="./js/tiangou.js"></script>
+                </div>
+            </div>
+            <!--倒计时-->
+            <div class="countdown-content">
+                <div class="countdown-content-item">
+                    <link rel="stylesheet" href="./style/time.css">
+                    <div class="time-schedule-main">
+                        <div class="today-schedule">
+                            <div class="mizhi-schedule-item">
+                                <div class="today-item" style="height: 36.27%;">
+                                    <img decoding="async" src="https://api.ge69.com/schedule/1.png">
+                                </div>
+                                <div class="schedule-info">
+                                    <span class="schedule-tilte">今天仅剩</span>
+                                    <span class="today-num">33.3%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="toweek-schedule">
+                            <div class="mizhi-schedule-item">
+                                <div class="toweek-item" style="height: 67.47%;">
+                                    <img decoding="async" src="https://api.ge69.com/schedule/1.png">
+                                </div>
+                                <div class="schedule-info">
+                                    <span class="schedule-tilte">本周还有</span>
+                                    <span class="toweek-num">61.9%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tomonth-schedule">
+                            <div class="mizhi-schedule-item">
+                                <div class="tomonth-item" style="height: 55.9%;">
+                                    <img decoding="async" src="https://api.ge69.com/schedule/1.png">
+                                </div>
+                                <div class="schedule-info">
+                                    <span class="schedule-tilte">本月剩余</span>
+                                    <span class="tomonth-num">55.9%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="toyear-schedule">
+                            <div class="mizhi-schedule-item">
+                                <div class="toyear-item" style="height: 5.18%;">
+                                    <img decoding="async" src="https://api.ge69.com/schedule/1.png">
+                                </div>
+                                <div class="schedule-info">
+                                    <span class="schedule-tilte">今年还剩</span>
+                                    <span class="toyear-num">4.7%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script src="./js/countdown.js"></script>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<style>
+    .desktop-content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%
+    }
+
+    .clock-of-particles {
+        flex-grow: 1;
+        height: 30%;
+        align-self: center;
+    }
+
+    .desktop-content-footer {
+        display: flex;
+        justify-content: space-between;
+        width: 90%;
+        padding: 3%;
+        height: 50%;
+    }
+
+    .tiangou-content,
+    .countdown-content {
+        min-width: 50%;
+        box-shadow: 0 0 6px rgba(255, 255, 255, .62);
+        margin: 10px;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .countdown-content-item {
+        width: 100%
+    }
+
+    .tiangou-content-item {
+        text-align: center;
+        width: 100%
+    }
+</style>
+
+</html>

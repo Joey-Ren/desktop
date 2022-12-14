@@ -1,0 +1,16 @@
+.tiangouText {
+    white-space: wrap; color: #f04494; font-size: 15px;
+    background-image: 
+        -webkit-gradient(linear, left top, right top, color-stop(0, #f22), 
+        color-stop(0.15, #f2f),
+        color-stop(0.3, #22f),
+        color-stop(0.45, #ffcf22),
+        color-stop(0.6, #36b417),
+        color-stop(0.75, #51c051),
+        color-stop(0.9, #d1d145),
+        color-stop(1, #f22));
+    color: transparent;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -ms-background-clip: text;min-height:100px;"
+}
