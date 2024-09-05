@@ -2,14 +2,12 @@ let array = [];
 let typed = null;
 (function () {
     $.ajax({
-        url: "https://wenan.ge69.com/api/tiangous",
+        url: "https://api.oioweb.cn/api/SimpWords",
         type: "get",
         timeout: 60000,
-        success: function (result) {
-            const txt = result.data;
-            $.each(txt, function (index, value) {
-                array.push(value.attributes.main);
-            });
+        success: function (res) {
+            const txt = res.result.content;
+            let array = txt.replace('，', ',').replace('.', ',').split(',')
             typed = new Typed("#tiangou", {
                 strings: array,
                 typeSpeed: 200,
