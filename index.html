@@ -16,25 +16,15 @@
         <!--粒子时钟-->
         <div class="clock-of-particles">
             <canvas id="time"></canvas>
-            <script src="./js/time.js"></script>
-            <script>
-                var time = new TimeCanvas('time', {
-                    width: 400,
-                    height: 250,
-                    color: "#FFF",
-                    format: "h:i:s",
-                    size: 40,
-                    init: e => {
-                        console.log('init', e)
-                    },
-                    change: (e) => { }
-                })
-            </script>
         </div>
         <div class="desktop-content-footer">
             <!--舔狗部分-->
             <div class="tiangou-content">
-                <div class="tiangou-content-item">
+                <div class='holiday-countdown'>
+                    <p style="font-size: 23px; text-align: center;">距离春节放假还有</p>
+                    <canvas id="spring-festival-countdown"></canvas>
+                </div>
+                <div class="tiangou-content-item" style='display: none;'>
                     <main>
                         <p style="margin-bottom: 10px; font-size: 18px">舔狗日记</p>
                         <div id="tiangou" class="tiangouText">
@@ -102,6 +92,27 @@
             </div>
         </div>
     </div>
+    <script src="./js/time.js"></script>
+    <script>
+        // 粒子时钟初始化
+        var time = new window.TimeCanvas.TimeCanvas('time', {
+            width: 400,
+            height: 250,
+            color: "#FFF",
+            format: "h:i:s",
+            size: 40
+        });
+        
+        // 春节倒计时初始化：2026年2月14日
+        var springFestivalCountdown = new window.TimeCanvas.CountdownCanvas('spring-festival-countdown', {
+            width: 400,
+            height: 150,
+            color: "#FFF",
+            format: "d:h:i:s",
+            size: 25,
+            targetDate: new Date('2026-02-14 00:00:00')
+        });
+    </script>
 </body>
 <style>
     .desktop-content {

@@ -126,7 +126,7 @@
   [[0, 0, 0, 0], [0, 0, 0, 0], [0, 1, 1, 0], [0, 1, 1, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 1, 1, 0], [0, 1, 1, 0], [0, 0, 0, 0], [0, 0, 0, 0]] //:
   ];
 
-  var FORMATS = ['h:i:s', 'h:i', 'i:s', 's'];
+  var FORMATS = ['d:h:i:s', 'h:i:s', 'i:s', 's'];
   var DEFAULT_OPTIONS = {
     colors: ["#99CCFF", "#0099CC", "#FF9999", "#FF0033", "#FFCC99", "#FF6600", "#99CC33", "#339933", "#CCCCFF", "#993399", "#FFFF66", "#FFCC00", "#FF33CC", "#666633"],
     color: '#0081FF',
@@ -149,7 +149,8 @@
 
       _classCallCheck(this, Base);
 
-      this.options = Object.assign(DEFAULT_OPTIONS, options);
+      // 创建一个新的options对象，避免修改DEFAULT_OPTIONS
+      this.options = Object.assign({}, DEFAULT_OPTIONS, options);
       this.id = id || 'canvas';
       this._balls = [];
       var canvas = document.getElementById(this.id);
@@ -157,8 +158,15 @@
       canvas.height = this.options.height;
       this.context = canvas.getContext("2d");
 
+      // 只在format不是FORMATS数组中的值时才设置默认值
       if (!FORMATS.includes(this.options.format)) {
-        this.options.format = FORMATS[0];
+        // 如果options中明确指定了format，并且不包含'd'，则使用该format
+        if (options.format && !options.format.includes('d')) {
+          this.options.format = options.format;
+        } else {
+          // 否则使用默认格式
+          this.options.format = FORMATS[0];
+        }
       }
     }
 
@@ -274,6 +282,11 @@
     }, {
       key: "_renderDigit",
       value: function _renderDigit(x, y, num) {
+        // 只处理数字和冒号字符
+        if (num !== ':' && isNaN(parseInt(num))) {
+          return;
+        }
+        
         var ctx = this.context;
         var radius = this._rect.radius;
         var size = radius + 1;
@@ -331,8 +344,9 @@
         for (var i = 0; i < balls.length; i++) {
           balls[i].x += balls[i].vx;
           balls[i].y += balls[i].vy;
-          balls[i].vy += balls[i].g; //bound
+          balls[i].vy += balls[i].g;
 
+          //bound
           if (balls[i].y >= height - radius) {
             balls[i].y = height - radius;
             balls[i].vy = -balls[i].vy * 0.75;
@@ -362,8 +376,9 @@
         var offset = this._rect.left;
         var size = this._rect.radius + 1;
 
-        for (var i = 0; i <= index; i++) {
-          var last = arr[i - 1];
+        // 只循环到index-1，这样就不会包含当前字符的宽度了
+        for (var i = 0; i < index; i++) {
+          var last = arr[i];
 
           if (last) {
             offset += (last === ':' ? 9 : 15) * size;
@@ -399,17 +414,18 @@
           } else {
             count += 9;
           }
-        } // 粒子半径
+        }
 
-
+        // 粒子半径
         if (size > 0) {
           radius = size / 14 - 1;
         } else {
           radius = validWidth / count - 1;
         }
 
-        radius = Math.max(1, radius); // 坐标原点
+        radius = Math.max(1, radius);
 
+        // 坐标原点
         if (center) {
           left = padding + validWidth / 2 - count / 2 * (radius + 1);
         } else {
@@ -462,10 +478,21 @@
 
       var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'canvas';
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      
+      // 确保Time类使用的是不包含'd'的格式
+      if (!options.format || options.format.includes('d')) {
+        options.format = 'h:i:s';
+      }
+
+      // 创建一个新的options对象，确保它不包含'd'
+      var newOptions = Object.assign({}, options);
+      if (newOptions.format.includes('d')) {
+        newOptions.format = 'h:i:s';
+      }
 
       _classCallCheck(this, Time);
 
-      _this = _super.call(this, id, options);
+      _this = _super.call(this, id, newOptions);
 
       _this._init();
 
@@ -537,11 +564,144 @@
       value: function _updateBalls() {
         this._getRenderBalls();
       }
-    }]);
+    }], {
+      getFormats: function getFormats() {
+        return FORMATS;
+      }
+    });
 
     return Time;
   }(Base);
 
-  return Time;
+  // 添加倒计时类
+  var Countdown = /*#__PURE__*/function (_Base) {
+    _inherits(Countdown, _Base);
+
+    var _super = _createSuper(Countdown);
+
+    function Countdown() {
+      var _this;
+
+      var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'canvas';
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+      // 确保Countdown类使用的是包含'd'的格式
+      if (!options.format || !options.format.includes('d')) {
+        options.format = 'd:h:i:s';
+      }
+
+      _classCallCheck(this, Countdown);
+
+      _this = _super.call(this, id, options);
+      // 设置目标日期，默认是2026年春节
+      _this.targetDate = options.targetDate || new Date('2026-02-14 00:00:00');
+
+      _this._init();
+
+      return _possibleConstructorReturn(_this, _this._getInstance());
+    }
+
+    _createClass(Countdown, [{
+      key: "_getInstance",
+      value: function _getInstance() {
+        var _this2 = this;
+
+        var obj = {};
+        var keys = ['pause', 'play', 'getCurrentTime', 'destroy'];
+        keys.map(function (item) {
+          obj[item] = _this2[item].bind(_this2);
+        });
+        return obj;
+      }
+    }, {
+      key: "_init",
+      value: function _init() {
+        this.play();
+
+        this._emit("init", this._currentTime);
+      }
+    }, {
+      key: "getCurrentTime",
+      value: function getCurrentTime() {
+        var now = new Date();
+        var timeDiff = this.targetDate - now;
+        
+        if (timeDiff < 0) {
+          timeDiff = 0;
+        }
+
+        // 计算剩余的天、时、分、秒
+        var days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+        var milliseconds = timeDiff % 1000;
+
+        return {
+          days: days,
+          hours: hours,
+          minutes: minutes,
+          seconds: seconds,
+          milliseconds: milliseconds,
+          now: now
+        };
+      }
+    }, {
+      key: "play",
+      value: function play() {
+        if (!this._currentTime) {
+          this._currentTime = this.getCurrentTime();
+        }
+
+        return this._play();
+      }
+    }, {
+      key: "pause",
+      value: function pause(reserve) {
+        return this._pause(reserve);
+      }
+    }, {
+      key: "destroy",
+      value: function destroy() {
+        return this._destroy();
+      }
+    }, {
+      key: "_getRenderData",
+      value: function _getRenderData(time) {
+        var days = time.days,
+            hours = time.hours,
+            minutes = time.minutes,
+            seconds = time.seconds;
+        var str = this.options.format;
+        
+        // 先替换所有占位符
+        str = str.replace('d', pad(days)).replace('h', pad(hours)).replace('i', pad(minutes)).replace('s', pad(seconds));
+        
+        // 如果天数为0，并且格式包含天数和冒号，则移除天数和冒号
+        if (days === 0 && this.options.format.includes('d:')) {
+          // 移除前三个字符（天数和冒号）
+          str = str.slice(3);
+        }
+        
+        return str.split('');
+      }
+    }, {
+      key: "_updateBalls",
+      value: function _updateBalls() {
+        this._getRenderBalls();
+      }
+    }], {
+      getFormats: function getFormats() {
+        return FORMATS;
+      }
+    });
+
+    return Countdown;
+  }(Base);
+
+  var TimeCanvas = Time;
+  var CountdownCanvas = Countdown;
+
+  return { TimeCanvas: TimeCanvas, CountdownCanvas: CountdownCanvas };
 
 }));
